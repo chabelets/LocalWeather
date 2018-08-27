@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">LocalWheather</string>
+    <string name="add_place">Add place</string>
+</resources>
