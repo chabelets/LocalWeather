@@ -2,6 +2,8 @@ package com.example.tom.localwheather.core.feature.Map;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.Network;
 import android.os.Build;
 import android.os.Bundle;
@@ -11,6 +13,7 @@ import android.view.View;
 
 import com.example.tom.localwheather.R;
 import com.example.tom.localwheather.core.base.mvp.BaseActivity;
+import com.example.tom.localwheather.core.model.db.DBManager;
 import com.example.tom.localwheather.core.model.locationManager.WeatherLocationManager;
 import com.example.tom.localwheather.core.model.pojo.Coord;
 import com.example.tom.localwheather.core.model.pojo.Place;
@@ -22,6 +25,10 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -36,14 +43,15 @@ public class MapActivity extends BaseActivity<MapContract.View, MapContract.Pres
     private GoogleMap map;
     private WeatherLocationManager locationManager;
     private Place place = new Place();
-    MarkerOptions markerOptions;
+    private MarkerOptions markerOptions;
+    private Geocoder geocoder;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getDeviceLocation();
         mapView.onCreate(savedInstanceState);
-
         mapView.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(GoogleMap mMap) {
@@ -71,6 +79,7 @@ public class MapActivity extends BaseActivity<MapContract.View, MapContract.Pres
             public void onMapClick(LatLng latLng) {
                 locationManager.stopLocationUpdates();
                 map.clear();
+
                 Coord coord = new Coord();
                 coord.setLat(latLng.latitude);
                 place.setCoord(coord);
@@ -173,18 +182,45 @@ public class MapActivity extends BaseActivity<MapContract.View, MapContract.Pres
         switch (view.getId()) {
             case R.id.okButton:
                 WeatherManager weatherManager = new WeatherManager();
-                weatherManager.receiveWeather(place)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(place1 ->{
-                            Logger.v("temp" + place1.getMain().getTemp());
-                        Logger.v("Coord place 1 " + place1.getCoord().getLat());
-                            Logger.v("Coord place 1 " + place1.getName());
+//                weatherManager.receiveWeather(place)
+//                        .subscribeOn(Schedulers.io())
+//                        .observeOn(AndroidSchedulers.mainThread())
+//                        .subscribe(place1 ->{
+//                            Logger.v("temp" + place1.getMain().getTemp());
+//                        Logger.v("Coord place 1 " + place1.getCoord().getLat());
+//                            Logger.v("Coord place 1 " + place1.getName());
+//
+//                        });
 
-                        });
+                getCityFromLocation();
                 break;
             case R.id.cancelButton:
                 break;
         }
+    }
+
+    void getCityFromLocation(){
+        geocoder = new Geocoder(this, Locale.getDefault());
+        List<Address> addresses = null;
+        try {
+            addresses = geocoder
+                        .getFromLocation(
+                                place.getCoord().getLat(),
+                                place.getCoord().getLon(),
+                                1);
+        } catch (IOException e) {
+            e.printStackTrace();
+            Logger.v(e.getMessage());
+        }
+        Address obj = addresses.get(0);
+//        DBManager dbManager = App.getApp(this).getDBManager();
+        DBManager dbManager = new DBManager(this);
+        Logger.v("getLocality " + obj.getLocality());
+        dbManager.addPlace(obj);
+
+    }
+    @Override
+    public void onWeatherFetchSuccessful() {
+
     }
 }
