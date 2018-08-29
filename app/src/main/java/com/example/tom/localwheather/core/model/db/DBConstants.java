@@ -8,9 +8,7 @@ public class DBConstants {
 
     public static final String DB_FIELD_ID = "_id";
     public static final String DB_FIELD_LOCALITY = "locality";
-    public static final String DB_FIELD_DESCRIPTION = "_description";
-    public static final String DB_FIELD_LATITUDE = "_latitude";
-    public static final String DB_FIELD_LONGITUDE = "_longitude";
-    public static final String DB_FIELD_LOCAL_PATH = "_localPath";
-    public static final String DB_FIELD_REMOTE_PATH = "_remotePath";
+    public static final String DB_FIELD_DESCRIPTION = "description";
+    public static final String DB_FIELD_LATITUDE = "latitude";
+    public static final String DB_FIELD_LONGITUDE = "longitude";
 }

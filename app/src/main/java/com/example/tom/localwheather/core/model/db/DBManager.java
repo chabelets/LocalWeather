@@ -21,19 +21,23 @@ public class DBManager {
         sqLiteDatabase = dbHelper.getWritableDatabase();
     }
 
-    public void addPlace(Address address){
+    public void addPlace(String city, double latitude, double longitude){
         ContentValues cv = new ContentValues();
-        cv.put(DBConstants.DB_FIELD_LOCALITY, address.getLocality());
+        cv.put(DBConstants.DB_FIELD_LOCALITY, city);
+        cv.put(DBConstants.DB_FIELD_LATITUDE, latitude);
+        cv.put(DBConstants.DB_FIELD_LONGITUDE, longitude);
 
-        Logger.v("addPlace() address.getLocality() " + address.getLocality());
+        Logger.v("addPlace() address.getLocality() " + city);
         sqLiteDatabase.insert(DBConstants.DB_TABLE_NAME, null, cv);
     }
 
-    public List<Address> getPlaceListFromDB(){
+    public List<String> getPlaceListFromDB(){
         Cursor cursor = sqLiteDatabase.query(
                 DBConstants.DB_TABLE_NAME,
                 new String[]{
-                        DBConstants.DB_FIELD_LOCALITY
+                        DBConstants.DB_FIELD_LOCALITY,
+                        DBConstants.DB_FIELD_LATITUDE,
+                        DBConstants.DB_FIELD_LONGITUDE
                 },
                 null,
                 null,
@@ -43,14 +47,20 @@ public class DBManager {
                 null
         );
 
-        List<Address> addresses = new ArrayList<>();
+        List<String> addresses = new ArrayList<>();
         if (cursor.moveToFirst()){
             do {
-                Address address = new Address(new Locale(Locale.getDefault(), Locale.));
-                address.setLocality(cursor.getString(cursor.getColumnIndex(DBConstants.DB_FIELD_LOCALITY)));
-                addresses.add(address);
+                String address = String.valueOf(new Address(Locale.getDefault()));
+//                address.(cursor.getString(cursor.getColumnIndex(DBConstants.DB_FIELD_LOCALITY)));
+                addresses.add(cursor.getString(cursor.getColumnIndex(DBConstants.DB_FIELD_LOCALITY)));
+
                 Logger.v("getPlaceListFromDB() addresses.add(address) " + address);
             } while (cursor.moveToNext());
+        }
+
+        for (String addres: addresses) {
+            Logger.v("Address addres: addresses " + addres);
+
         }
         return addresses;
     }

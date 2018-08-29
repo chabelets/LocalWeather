@@ -1,16 +1,14 @@
-package com.example.tom.localwheather.core.network;
+package com.example.tom.localwheather.core.model.network;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.example.tom.localwheather.core.model.pojo.Place;
-import com.example.tom.localwheather.core.model.pojo.PlaceD;
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
 import io.reactivex.Single;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 

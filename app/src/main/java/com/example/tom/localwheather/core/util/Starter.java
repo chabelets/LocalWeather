@@ -3,9 +3,9 @@ package com.example.tom.localwheather.core.util;
 import android.content.Context;
 import android.content.Intent;
 
-import com.example.tom.localwheather.core.feature.Map.MapActivity;
-import com.example.tom.localwheather.core.feature.Places.PlacesActivity;
-import com.example.tom.localwheather.core.feature.Weather.WeatherActivity;
+import com.example.tom.localwheather.core.feature.map.MapActivity;
+import com.example.tom.localwheather.core.feature.places.PlacesActivity;
+import com.example.tom.localwheather.core.feature.weather.WeatherActivity;
 
 public class Starter {
     public static void startPlacesActivity(Context context) {

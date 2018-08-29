@@ -1,9 +1,8 @@
-package com.example.tom.localwheather.core.network;
+package com.example.tom.localwheather.core.model.network;
 
 import android.support.annotation.NonNull;
 
 import com.example.tom.localwheather.core.model.pojo.Place;
-import com.example.tom.localwheather.core.model.pojo.PlaceD;
 
 import io.reactivex.Single;
 

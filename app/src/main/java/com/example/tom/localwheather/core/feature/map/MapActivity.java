@@ -1,10 +1,9 @@
-package com.example.tom.localwheather.core.feature.Map;
+package com.example.tom.localwheather.core.feature.map;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
-import android.net.Network;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,9 +16,9 @@ import com.example.tom.localwheather.core.model.db.DBManager;
 import com.example.tom.localwheather.core.model.locationManager.WeatherLocationManager;
 import com.example.tom.localwheather.core.model.pojo.Coord;
 import com.example.tom.localwheather.core.model.pojo.Place;
-import com.example.tom.localwheather.core.model.pojo.Weather;
-import com.example.tom.localwheather.core.network.WeatherManager;
+import com.example.tom.localwheather.core.model.network.WeatherManager;
 import com.example.tom.localwheather.core.util.Logger;
+import com.example.tom.localwheather.core.util.Starter;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -32,7 +31,6 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
@@ -45,7 +43,6 @@ public class MapActivity extends BaseActivity<MapContract.View, MapContract.Pres
     private Place place = new Place();
     private MarkerOptions markerOptions;
     private Geocoder geocoder;
-
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -79,7 +76,6 @@ public class MapActivity extends BaseActivity<MapContract.View, MapContract.Pres
             public void onMapClick(LatLng latLng) {
                 locationManager.stopLocationUpdates();
                 map.clear();
-
                 Coord coord = new Coord();
                 coord.setLat(latLng.latitude);
                 place.setCoord(coord);
@@ -182,19 +178,21 @@ public class MapActivity extends BaseActivity<MapContract.View, MapContract.Pres
         switch (view.getId()) {
             case R.id.okButton:
                 WeatherManager weatherManager = new WeatherManager();
-//                weatherManager.receiveWeather(place)
-//                        .subscribeOn(Schedulers.io())
-//                        .observeOn(AndroidSchedulers.mainThread())
-//                        .subscribe(place1 ->{
-//                            Logger.v("temp" + place1.getMain().getTemp());
-//                        Logger.v("Coord place 1 " + place1.getCoord().getLat());
-//                            Logger.v("Coord place 1 " + place1.getName());
-//
-//                        });
+                weatherManager.receiveWeather(place)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(place1 ->{
+                            Logger.v("temp" + place1.getMain().getTemp());
+                        Logger.v("Coord place 1 " + place1.getCoord().getLat());
+                            Logger.v("Coord place 1 " + place1.getName());
+
+                        });
 
                 getCityFromLocation();
+                Starter.startPlacesActivity(this);
                 break;
             case R.id.cancelButton:
+                Starter.startWeatherActivity(this);
                 break;
         }
     }
@@ -216,8 +214,9 @@ public class MapActivity extends BaseActivity<MapContract.View, MapContract.Pres
 //        DBManager dbManager = App.getApp(this).getDBManager();
         DBManager dbManager = new DBManager(this);
         Logger.v("getLocality " + obj.getLocality());
-        dbManager.addPlace(obj);
-
+        dbManager.addPlace(obj.getLocality(), obj.getLatitude(), obj.getLongitude());
+        dbManager.getPlaceListFromDB();
+        Starter.startPlacesActivity(this);
     }
     @Override
     public void onWeatherFetchSuccessful() {

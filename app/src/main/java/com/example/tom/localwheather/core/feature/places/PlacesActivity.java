@@ -1,26 +1,45 @@
-package com.example.tom.localwheather.core.feature.Places;
+package com.example.tom.localwheather.core.feature.places;
 
 import android.content.Intent;
+import android.location.Address;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.widget.Toast;
 
 import com.example.tom.localwheather.R;
 import com.example.tom.localwheather.core.base.mvp.BaseActivity;
-import com.example.tom.localwheather.core.util.Logger;
+
+import com.example.tom.localwheather.core.feature.places.PlacesContract;
+import com.example.tom.localwheather.core.feature.places.PlacesPresenter;
+import com.example.tom.localwheather.core.model.db.DBManager;
 import com.example.tom.localwheather.core.util.Starter;
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 
+import java.util.List;
+
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class PlacesActivity extends BaseActivity<PlacesContract.View, PlacesContract.Presenter>
         implements PlacesContract.View {
 
-    private static final int PLACE_PICKER_REQUEST = 13;
+    List<Address> city;
+    @BindView(R.id.placeRecyclerView)
+    RecyclerView placeRecyclerView;
+    private LocationAdapter locationAdapter;
 
+    void setLocationAdapter(List<String> address){
+
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+        placeRecyclerView.setHasFixedSize(true);
+        placeRecyclerView.setLayoutManager(layoutManager);
+        locationAdapter = new LocationAdapter(address);
+        placeRecyclerView.setAdapter(locationAdapter);
+        locationAdapter.notifyDataSetChanged();
+    }
     @Override
     protected PlacesContract.View createView() {
         return this;
@@ -41,6 +60,13 @@ public class PlacesActivity extends BaseActivity<PlacesContract.View, PlacesCont
         super.onCreate(savedInstanceState);
         // TODO: add setContentView(...) invocation
         ButterKnife.bind(this);
+        DBManager dbManager = new DBManager(this);
+        setLocationAdapter(dbManager.getPlaceListFromDB());
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     @OnClick(R.id.addPlaceBtnPlaceActivity)
@@ -55,15 +81,4 @@ public class PlacesActivity extends BaseActivity<PlacesContract.View, PlacesCont
 //        }
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == PLACE_PICKER_REQUEST){
-            Place place = PlacePicker.getPlace(this, data);
-            String toastMsg = String.format("Place: %s", place.getName());
-            Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
-            place.getLatLng();
-        }
-        super.onActivityResult(requestCode, resultCode, data);
-
-    }
 }

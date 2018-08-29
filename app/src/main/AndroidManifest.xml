@@ -13,14 +13,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".core.feature.Places.PlacesActivity">
+        <activity android:name=".core.feature.places.PlacesActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".core.feature.Map.MapActivity" />
+        <activity android:name=".core.feature.map.MapActivity" />
+        <activity android:name=".core.feature.weather.WeatherActivity" />
         <!--<activity android:name=".core.feature.Wheather.WheatherActivity" />-->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
