@@ -11,4 +11,5 @@ public class DBConstants {
     public static final String DB_FIELD_DESCRIPTION = "description";
     public static final String DB_FIELD_LATITUDE = "latitude";
     public static final String DB_FIELD_LONGITUDE = "longitude";
+    public static final String DB_FIELD_WEATHER = "weather";
 }

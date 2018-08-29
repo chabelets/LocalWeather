@@ -5,7 +5,11 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Address;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
+import com.example.tom.localwheather.core.model.pojo.City;
 import com.example.tom.localwheather.core.util.Logger;
 
 import java.util.ArrayList;
@@ -21,25 +25,13 @@ public class DBManager {
         sqLiteDatabase = dbHelper.getWritableDatabase();
     }
 
-    public void addPlace(String city, double latitude, double longitude){
-        ContentValues cv = new ContentValues();
-        cv.put(DBConstants.DB_FIELD_LOCALITY, city);
-        cv.put(DBConstants.DB_FIELD_LATITUDE, latitude);
-        cv.put(DBConstants.DB_FIELD_LONGITUDE, longitude);
-
-        Logger.v("addPlace() address.getLocality() " + city);
-        sqLiteDatabase.insert(DBConstants.DB_TABLE_NAME, null, cv);
-    }
-
-    public List<String> getPlaceListFromDB(){
+    public void addPlace(String cityName, double latitude, double longitude) {
         Cursor cursor = sqLiteDatabase.query(
                 DBConstants.DB_TABLE_NAME,
-                new String[]{
-                        DBConstants.DB_FIELD_LOCALITY,
-                        DBConstants.DB_FIELD_LATITUDE,
-                        DBConstants.DB_FIELD_LONGITUDE
+                new String[] {
+                        DBConstants.DB_FIELD_LOCALITY
                 },
-                null,
+                DBConstants.DB_FIELD_LOCALITY + "=?" + cityName,
                 null,
                 null,
                 null,
@@ -47,6 +39,75 @@ public class DBManager {
                 null
         );
 
+        if (!cursor.moveToFirst()) {
+//        if (cursor.moveToFirst()
+//                && TextUtils.equals(cursor.getString(cursor.getColumnIndex(DBConstants.DB_FIELD_LOCALITY)), cityName)) {
+            ContentValues cv = new ContentValues();
+            cv.put(DBConstants.DB_FIELD_LOCALITY, cityName);
+            cv.put(DBConstants.DB_FIELD_LATITUDE, latitude);
+            cv.put(DBConstants.DB_FIELD_LONGITUDE, longitude);
+
+            Logger.v("addPlace() address.getLocality() " + cityName);
+            sqLiteDatabase.insert(DBConstants.DB_TABLE_NAME, null, cv);
+        }
+        cursor.close();
+    }
+
+    public List<String> getCities() {}
+
+    public City getCity(@NonNull String cityName) {
+        Cursor cursor = sqLiteDatabase.query(
+                DBConstants.DB_TABLE_NAME,
+                new String[] {
+                        DBConstants.DB_FIELD_LOCALITY,
+                        DBConstants.DB_FIELD_LATITUDE,
+                        DBConstants.DB_FIELD_LONGITUDE,
+                        DBConstants.DB_FIELD_WEATHER
+                },
+                DBConstants.DB_FIELD_LOCALITY + "=?" + cityName,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+
+        City city = new City();
+        if (cursor.moveToFirst()) {
+            String cityLat = cursor.getString(cursor.getColumnIndex(DBConstants.DB_FIELD_LATITUDE));
+            String cityLng = cursor.getString(cursor.getColumnIndex(DBConstants.DB_FIELD_LONGITUDE));
+            String cityWeather = cursor.getString(cursor.getColumnIndex(DBConstants.DB_FIELD_WEATHER));
+
+            city.setCity(cityName);
+            city.setLatitude(cityLat);
+            city.setLongitude(cityLng);
+            city.setWeather(cityWeather);
+        }
+        cursor.close();
+        return city;
+    }
+
+    public List<String> getPlaceListFromDB(@Nullable String selection){
+        Cursor cursor = sqLiteDatabase.query(
+                DBConstants.DB_TABLE_NAME,
+                new String[]{
+                        DBConstants.DB_FIELD_LOCALITY,
+                        DBConstants.DB_FIELD_LATITUDE,
+                        DBConstants.DB_FIELD_LONGITUDE
+                },
+                selection,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+
+        if (selection != null) {
+            getCityLocation(cursor);
+        } else {
+            getFullDatabase(cursor);
+        }
         List<String> addresses = new ArrayList<>();
         if (cursor.moveToFirst()){
             do {
@@ -64,5 +125,11 @@ public class DBManager {
         }
         return addresses;
     }
+
+    private void getFullDatabase(@NonNull Cursor c) {}
+
+    private void getCityLocation(@NonNull Cursor c) {}
+
+
 
 }

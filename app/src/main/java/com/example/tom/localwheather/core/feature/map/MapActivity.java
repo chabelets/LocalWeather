@@ -211,7 +211,7 @@ public class MapActivity extends BaseActivity<MapContract.View, MapContract.Pres
             Logger.v(e.getMessage());
         }
         Address obj = addresses.get(0);
-//        DBManager dbManager = App.getApp(this).getDBManager();
+        //TODO        DBManager dbManager = App.getApp(this).getDBManager();
         DBManager dbManager = new DBManager(this);
         Logger.v("getLocality " + obj.getLocality());
         dbManager.addPlace(obj.getLocality(), obj.getLatitude(), obj.getLongitude());
