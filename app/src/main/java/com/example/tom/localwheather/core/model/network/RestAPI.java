@@ -11,7 +11,7 @@ public interface RestAPI {
 
 //    api.openweathermap.org/data/2.5/weather?lat=35&lon=139&APPID=addc4a37960ab6c1aa199a82e36249d8
     @GET("weather")
-    Single<City> getWeather(@Query("lat") double latitude,
+    Single<Place> getWeather(@Query("lat") double latitude,
                             @Query("lon") double longitude,
                             @Query("appid") String apiKey,
                             @Query("units") String unit);

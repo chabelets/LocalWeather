@@ -48,6 +48,9 @@ public class DBManager {
 //        if (cursor.moveToFirst()
 //                && TextUtils.equals(cursor.getString(cursor.getColumnIndex(DBConstants.DB_FIELD_LOCALITY)), cityName)) {
             ContentValues cv = new ContentValues();
+            if (cityName == null){
+                cityName = "Some place";
+            }
             cv.put(DBConstants.DB_FIELD_LOCALITY, cityName);
             cv.put(DBConstants.DB_FIELD_LATITUDE, latitude);
             cv.put(DBConstants.DB_FIELD_LONGITUDE, longitude);
@@ -72,8 +75,8 @@ public class DBManager {
                         DBConstants.DB_FIELD_LONGITUDE
 //                        DBConstants.DB_FIELD_WEATHER
                 },
-                null,
-                null,
+                DBConstants.DB_FIELD_LOCALITY + " =?",
+                new String[] {cityName},
                 null,
                 null,
                 null,

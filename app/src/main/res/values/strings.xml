@@ -2,4 +2,5 @@
     <string name="app_name">LocalWheather</string>
     <string name="add_place">Add place</string>
     <string name="check_weather">Check weather</string>
+    <string name="city_item_weather_activity">Do you want to know the weather in</string>
 </resources>

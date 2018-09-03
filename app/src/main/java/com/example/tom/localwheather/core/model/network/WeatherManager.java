@@ -47,7 +47,7 @@ public class WeatherManager implements WeatherManagerContract{
     }
 
     @Override
-    public Single<City> receiveWeather(@NonNull City place) {
+    public Single<Place> receiveWeather(@NonNull City place) {
         return restAPI.getWeather(place.getLatitude(), place.getLongitude(), API_KEY, UNIT);
     }
 }

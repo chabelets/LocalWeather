@@ -10,6 +10,7 @@ import com.example.tom.localwheather.core.base.mvp.BaseActivity;
 import com.example.tom.localwheather.core.model.db.DBManager;
 import com.example.tom.localwheather.core.model.network.WeatherManager;
 import com.example.tom.localwheather.core.model.pojo.City;
+import com.example.tom.localwheather.core.model.pojo.Place;
 import com.example.tom.localwheather.core.util.Logger;
 
 import butterknife.BindView;
@@ -25,7 +26,9 @@ public class WeatherActivity extends BaseActivity<WeatherContract.View, WeatherC
     RecyclerView weatherRecyclerView;
     @BindView(R.id.cityItem)
     TextView cityItem;
-    String city;
+    @BindView(R.id.cityTemp)
+    TextView cityTemp;
+    private String city;
 
     @Override
     protected WeatherContract.View createView() {
@@ -49,13 +52,15 @@ public class WeatherActivity extends BaseActivity<WeatherContract.View, WeatherC
         ButterKnife.bind(this);
         Intent intent = getIntent();
         city = intent.getStringExtra("city");
-        cityItem.setText("Do you want to know the weather in " + city + "?");
+        cityItem.setText(String.format("%s%s?", getString(R.string.city_item_weather_activity), city));
     }
 
     @OnClick(R.id.checkWeatherBtnWeatherActivity)
     public void onViewClicked() {
+        cityItem.
         DBManager dbManager = new DBManager(this);
         City place = dbManager.getCity(city);
+//        Place place = new Place();
 //        Logger.v("receiveWeather(place) temp" + place.getWeather());
         Logger.v("receiveWeather(place) city" + place.getCity());
         Logger.v("receiveWeather(place) Coord place 1 " + place.getLatitude());
@@ -64,13 +69,14 @@ public class WeatherActivity extends BaseActivity<WeatherContract.View, WeatherC
         weatherManager.receiveWeather(place)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<City>() {
+                .subscribe(new Consumer<Place>() {
                     @Override
-                    public void accept(City place1) throws Exception {
-//                        Logger.v("receiveWeather(place1) temp" + place1.getWeather());
-                        Logger.v("receiveWeather(place1) city" + place1.getCity());
-                        Logger.v("receiveWeather(place1) Coord place 1 " + place1.getLatitude());
-                        Logger.v("receiveWeather(place1) Coord place 1 " + place1.getLongitude());
+                    public void accept(Place place1) throws Exception {
+                        cityTemp.setText(String.valueOf(place1.getMain().getTemp()));
+                        Logger.v("receiveWeather(place1) temp" + place1.getMain().getTemp());
+                        Logger.v("receiveWeather(place1) city" + place1.getName());
+                        Logger.v("receiveWeather(place1) Coord place 1 " + place1.getCoord().getLat());
+                        Logger.v("receiveWeather(place1) Coord place 1 " + place1.getCoord().getLat());
 
                     }
                 });

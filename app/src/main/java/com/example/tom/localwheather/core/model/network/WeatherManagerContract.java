@@ -9,5 +9,5 @@ import io.reactivex.Single;
 
 public interface WeatherManagerContract {
 
-    Single<City> receiveWeather(@NonNull City place);
+    Single<Place> receiveWeather(@NonNull City city);
 }
