@@ -177,16 +177,16 @@ public class MapActivity extends BaseActivity<MapContract.View, MapContract.Pres
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.okButton:
-                WeatherManager weatherManager = new WeatherManager();
-                weatherManager.receiveWeather(place)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(place1 ->{
-                            Logger.v("temp" + place1.getMain().getTemp());
-                        Logger.v("Coord place 1 " + place1.getCoord().getLat());
-                            Logger.v("Coord place 1 " + place1.getName());
-
-                        });
+//                WeatherManager weatherManager = new WeatherManager();
+//                weatherManager.receiveWeather(place)
+//                        .subscribeOn(Schedulers.io())
+//                        .observeOn(AndroidSchedulers.mainThread())
+//                        .subscribe(place1 ->{
+//                            Logger.v("temp" + place1.getMain().getTemp());
+//                        Logger.v("Coord place 1 " + place1.getCoord().getLat());
+//                            Logger.v("Coord place 1 " + place1.getName());
+//
+//                        });
 
                 getCityFromLocation();
                 Starter.startPlacesActivity(this);
@@ -211,9 +211,18 @@ public class MapActivity extends BaseActivity<MapContract.View, MapContract.Pres
             Logger.v(e.getMessage());
         }
         Address obj = addresses.get(0);
+//        if (addresses.size() == 0) {
+//            obj.setLocality("Some place without name");
+//            addresses.set(0, obj);
+//            Logger.v("addresses.get(0)( getLocality " + obj.getLocality());
+//            Logger.v("addresses.get(0)( getLatitude " + obj.getLatitude());
+//            Logger.v("addresses.get(0)( getLongitude " + obj.getLongitude());
+//        }
         //TODO        DBManager dbManager = App.getApp(this).getDBManager();
         DBManager dbManager = new DBManager(this);
-        Logger.v("getLocality " + obj.getLocality());
+        Logger.v("getCityFromLocation( getLocality " + obj.getLocality());
+        Logger.v("getCityFromLocation( getLatitude " + obj.getLatitude());
+        Logger.v("getCityFromLocation( getLongitude " + obj.getLongitude());
         dbManager.addPlace(obj.getLocality(), obj.getLatitude(), obj.getLongitude());
         dbManager.getPlaceListFromDB();
         Starter.startPlacesActivity(this);

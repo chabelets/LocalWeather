@@ -3,6 +3,7 @@ package com.example.tom.localwheather.core.model.network;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.example.tom.localwheather.core.model.pojo.City;
 import com.example.tom.localwheather.core.model.pojo.Place;
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
@@ -46,7 +47,7 @@ public class WeatherManager implements WeatherManagerContract{
     }
 
     @Override
-    public Single<Place> receiveWeather(@NonNull Place place) {
-        return restAPI.getWeather(place.getCoord().getLat(), place.getCoord().getLon(), API_KEY, UNIT);
+    public Single<City> receiveWeather(@NonNull City place) {
+        return restAPI.getWeather(place.getLatitude(), place.getLongitude(), API_KEY, UNIT);
     }
 }
